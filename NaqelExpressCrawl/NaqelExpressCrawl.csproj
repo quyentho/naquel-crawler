@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.18"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+
+        
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CrawlingService\CrawlingService.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="block-cookie-consent\manifest.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\bg\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\cs\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\da\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\de\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\en\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\es\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\fr\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\hr\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\hu\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\it\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\ja\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\lt\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\nb\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\nl\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\nn\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\no\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\pl\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\pt\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\ro\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\ru\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\sk\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\sv\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_locales\uk\messages.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_metadata\computed_hashes.json" />
+      <_ContentIncludedByDefault Remove="block-cookie-consent\_metadata\verified_contents.json" />
+    </ItemGroup>
+
+</Project>
