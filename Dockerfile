@@ -18,6 +18,8 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "NaqelExpressCrawl.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+# to run chrome browser in docker
+RUN apt-get update && apt-get install -y xorg openbox libnss3 libasound2
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "NaqelExpressCrawl.dll"]

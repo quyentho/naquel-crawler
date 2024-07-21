@@ -63,7 +63,8 @@ public class CrawlingService
             Args = new string[]
             {
                 $"--disable-extensions-except={cookieConsentBlockerFolder}",
-                $"--load-extension={cookieConsentBlockerFolder}"
+                $"--load-extension={cookieConsentBlockerFolder}",
+                "--no-sandbox"
             }
         });
         var page = await browser.NewPageAsync();
