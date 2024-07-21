@@ -44,7 +44,6 @@ public class CrawlingService
                         pieceCount, date, description, location,
                         time);
                 }
-
             }
         }
     }
