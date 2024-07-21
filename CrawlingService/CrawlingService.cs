@@ -22,26 +22,26 @@ public class CrawlingService
         {
             var infoCard = generalInfoCardsTask[i];
             string tdXpath = "(//table//td)";
-            var shipNoTask = infoCard.SelectSingleNode($"{tdXpath}[1]").InnerText;
-            var destinationTask = infoCard.SelectSingleNode($"{tdXpath}[2]").InnerText;
-            var expectedDeliveryDateTask = infoCard.SelectSingleNode($"{tdXpath}[3]").InnerText;
-            var pickupDateTask = infoCard.SelectSingleNode($"{tdXpath}[4]").InnerText;
-            var paymentMethodTask = infoCard.SelectSingleNode($"{tdXpath}[5]").InnerText;
-            var pieceCountTask = infoCard.SelectSingleNode($"{tdXpath}[6]").InnerText;
+            var shipNo = infoCard.SelectSingleNode($"{tdXpath}[1]").InnerText;
+            var destination = infoCard.SelectSingleNode($"{tdXpath}[2]").InnerText;
+            var expectedDeliveryDate = infoCard.SelectSingleNode($"{tdXpath}[3]").InnerText;
+            var pickupDate = infoCard.SelectSingleNode($"{tdXpath}[4]").InnerText;
+            var paymentMethod = infoCard.SelectSingleNode($"{tdXpath}[5]").InnerText;
+            var pieceCount = infoCard.SelectSingleNode($"{tdXpath}[6]").InnerText;
 
             var detailCard = shipmentDetailsCardTask[i];
             var statusRows = detailCard.SelectNodes("./div[@class='row']");
             foreach (var row in statusRows)
             {
-                var dateTask = row.SelectSingleNode("./div[1]//p[not(contains(@class,'hide_in_phone'))]").InnerText;
-                var descriptionTask = row.SelectSingleNode("(./div[position() > 1]//p)[1]").InnerText;
-                var locationTask = row.SelectSingleNode("(./div[position() > 1]//p)[2]").InnerText;
-                var timeTask = row.SelectSingleNode("(./div[position() > 1]//p)[3]").InnerText;
+                var date = row.SelectSingleNode("./div[1]//p[not(contains(@class,'hide_in_phone'))]").InnerText.Replace(",", " ");
+                var description = row.SelectSingleNode("(./div[position() > 1]//p)[1]").InnerText;
+                var location = row.SelectSingleNode("(./div[position() > 1]//p)[2]").InnerText;
+                var time = row.SelectSingleNode("(./div[position() > 1]//p)[3]").InnerText;
 
-                yield return new(shipNoTask, pickupDateTask, destinationTask,
-                    paymentMethodTask, expectedDeliveryDateTask,
-                    pieceCountTask, dateTask, descriptionTask, locationTask,
-                    timeTask);
+                yield return new(shipNo, pickupDate, destination,
+                    paymentMethod, expectedDeliveryDate,
+                    pieceCount, date, description, location,
+                    time);
             }
         }
     }
