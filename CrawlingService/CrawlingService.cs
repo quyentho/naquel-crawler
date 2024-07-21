@@ -16,12 +16,10 @@ public class CrawlingService
         var generalInfoCardsTask = root.SelectNodes("//div[@class='card-body bg-white']");
         var shipmentDetailsCardTask = root.SelectNodes("//div[@class='card-body']");
 
-        var result = new List<TrackingDetails>();
-
         for (int i = 0; i < generalInfoCardsTask.Count; i++)
         {
             var infoCard = generalInfoCardsTask[i];
-            string tdXpath = "(//table//td)";
+            string tdXpath = "(.//table//td)";
             var shipNo = infoCard.SelectSingleNode($"{tdXpath}[1]").InnerText;
             var destination = infoCard.SelectSingleNode($"{tdXpath}[2]").InnerText;
             var expectedDeliveryDate = infoCard.SelectSingleNode($"{tdXpath}[3]").InnerText;
@@ -34,14 +32,19 @@ public class CrawlingService
             foreach (var row in statusRows)
             {
                 var date = row.SelectSingleNode("./div[1]//p[not(contains(@class,'hide_in_phone'))]").InnerText.Replace(",", " ");
-                var description = row.SelectSingleNode("(./div[position() > 1]//p)[1]").InnerText;
-                var location = row.SelectSingleNode("(./div[position() > 1]//p)[2]").InnerText;
-                var time = row.SelectSingleNode("(./div[position() > 1]//p)[3]").InnerText;
+                var timeLineRows = row.SelectNodes("./div[position() > 1]");
+                foreach (var timeLineRow in timeLineRows)
+                {
+                    var description = timeLineRow.SelectSingleNode("(.//p)[1]").InnerText;
+                    var location = timeLineRow.SelectSingleNode("(.//p)[2]").InnerText;
+                    var time = timeLineRow.SelectSingleNode("(.//p)[3]").InnerText;
+                   
+                    yield return new(shipNo, pickupDate, destination,
+                        paymentMethod, expectedDeliveryDate,
+                        pieceCount, date, description, location,
+                        time);
+                }
 
-                yield return new(shipNo, pickupDate, destination,
-                    paymentMethod, expectedDeliveryDate,
-                    pieceCount, date, description, location,
-                    time);
             }
         }
     }
