@@ -1,4 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+RUN apt-get update && apt-get install -y xorg openbox libnss3 libasound2
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -19,7 +20,6 @@ RUN dotnet publish "NaqelExpressCrawl.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 
 FROM base AS final
 # to run chrome browser in docker
-RUN apt-get update && apt-get install -y xorg openbox libnss3 libasound2
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "NaqelExpressCrawl.dll"]
