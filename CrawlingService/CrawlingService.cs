@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO.Compression;
+using System.Reflection;
 using HtmlAgilityPack;
 using PuppeteerSharp;
 
@@ -7,7 +8,7 @@ namespace CrawlingService;
 public class CrawlingService
 {
     private const string BaseUrl = "https://www.naqelexpress.com/en/tracking/";
-    
+
     public IEnumerable<TrackingDetails> ParseContent(string pageContent)
     {
         HtmlDocument doc = new();
@@ -31,14 +32,15 @@ public class CrawlingService
             var statusRows = detailCard.SelectNodes("./div[@class='row']");
             foreach (var row in statusRows)
             {
-                var date = row.SelectSingleNode("./div[1]//p[not(contains(@class,'hide_in_phone'))]").InnerText.Replace(",", " ");
+                var date = row.SelectSingleNode("./div[1]//p[not(contains(@class,'hide_in_phone'))]").InnerText
+                    .Replace(",", " ");
                 var timeLineRows = row.SelectNodes("./div[position() > 1]");
                 foreach (var timeLineRow in timeLineRows)
                 {
                     var description = timeLineRow.SelectSingleNode("(.//p)[1]").InnerText;
                     var location = timeLineRow.SelectSingleNode("(.//p)[2]").InnerText;
                     var time = timeLineRow.SelectSingleNode("(.//p)[3]").InnerText;
-                   
+
                     yield return new(shipNo, pickupDate, destination,
                         paymentMethod, expectedDeliveryDate,
                         pieceCount, date, description, location,
@@ -48,7 +50,7 @@ public class CrawlingService
         }
     }
 
-    public async IAsyncEnumerable<string> GetPageContentAsync(IEnumerable<string> referenceNumbers)
+    public async IAsyncEnumerable<string> GetPageContentInChunksAsync(IEnumerable<string> referenceNumbers)
     {
         var browserFetcher = new BrowserFetcher();
         var browsers = browserFetcher.GetInstalledBrowsers();
@@ -84,5 +86,40 @@ public class CrawlingService
 
             yield return await page.GetContentAsync();
         }
+    }
+
+    public async Task<string> GetPageContentAsync(IEnumerable<string> referenceNumbers)
+    {
+        var browserFetcher = new BrowserFetcher();
+        var browsers = browserFetcher.GetInstalledBrowsers();
+        if (browsers == null || !browsers.Any())
+        {
+            await browserFetcher.DownloadAsync();
+        }
+
+        var currentRunningDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var cookieConsentBlockerFolder = Path.Combine(currentRunningDirectory, "block-cookie-consent");
+        await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+        {
+            Headless = false,
+            Args = new string[]
+            {
+                $"--disable-extensions-except={cookieConsentBlockerFolder}",
+                $"--load-extension={cookieConsentBlockerFolder}",
+                "--no-sandbox",
+                "--disable-features=site-per-process" // this is required to run multiple instances in different thread
+            }
+        });
+        var page = await browser.NewPageAsync();
+        await page.GoToAsync(BaseUrl);
+
+        var form = await page.XPathAsync("//form[textarea[@id='id_waybills']]");
+        var inputArea = await page.QuerySelectorAsync("#id_waybills");
+        await inputArea.EvaluateFunctionAsync($"el => el.value = '{string.Join(",", referenceNumbers)}'");
+        await form.First().EvaluateFunctionAsync("e => e.submit()");
+
+        await page.WaitForNavigationAsync();
+
+        return await page.GetContentAsync();
     }
 }
