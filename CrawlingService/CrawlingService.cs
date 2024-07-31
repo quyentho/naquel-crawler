@@ -101,7 +101,7 @@ public class CrawlingService
         var cookieConsentBlockerFolder = Path.Combine(currentRunningDirectory, "block-cookie-consent");
         await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
         {
-            Headless = false,
+            Headless = true,
             Args = new string[]
             {
                 $"--disable-extensions-except={cookieConsentBlockerFolder}",
