@@ -41,7 +41,16 @@ public class NaqelCrawlingController : ControllerBase
             var completedTask = await Task.WhenAny(pageContentTasks);
             pageContentTasks.Remove(completedTask);
             var pageContent = await completedTask;
-            var result = _service.ParseContent(pageContent);
+            var result = Enumerable.Empty<TrackingDetails>();
+            try
+            {
+                result = _service.ParseContent(pageContent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error parsing content");
+                throw;
+            }
             foreach (var item in result)
             {
                 var line = item.ToString() + "\n";
@@ -49,7 +58,7 @@ public class NaqelCrawlingController : ControllerBase
                 await Response.Body.WriteAsync(lineBytes, 0, lineBytes.Length);
             }
         }
-        
+
         return new EmptyResult();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using System.Reflection;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
 
 namespace CrawlingService;
@@ -8,7 +9,12 @@ namespace CrawlingService;
 public class CrawlingService
 {
     private const string BaseUrl = "https://www.naqelexpress.com/en/tracking/";
+    private readonly ILogger<CrawlingService> _logger;
 
+    public CrawlingService(ILogger<CrawlingService> logger)
+    {
+        this._logger = logger;
+    }
     public IEnumerable<TrackingDetails> ParseContent(string pageContent)
     {
         HtmlDocument doc = new();
@@ -90,36 +96,45 @@ public class CrawlingService
 
     public async Task<string> GetPageContentAsync(IEnumerable<string> referenceNumbers)
     {
-        var browserFetcher = new BrowserFetcher();
-        var browsers = browserFetcher.GetInstalledBrowsers();
-        if (browsers == null || !browsers.Any())
+        try
         {
-            await browserFetcher.DownloadAsync();
-        }
-
-        var currentRunningDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var cookieConsentBlockerFolder = Path.Combine(currentRunningDirectory, "block-cookie-consent");
-        await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-        {
-            Headless = true,
-            Args = new string[]
+            var browserFetcher = new BrowserFetcher();
+            var browsers = browserFetcher.GetInstalledBrowsers();
+            if (browsers == null || !browsers.Any())
             {
+                await browserFetcher.DownloadAsync();
+            }
+
+            var currentRunningDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var cookieConsentBlockerFolder = Path.Combine(currentRunningDirectory, "block-cookie-consent");
+            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            {
+                Headless = true,
+                Args = new string[]
+                {
                 $"--disable-extensions-except={cookieConsentBlockerFolder}",
                 $"--load-extension={cookieConsentBlockerFolder}",
                 "--no-sandbox",
                 "--disable-features=site-per-process" // this is required to run multiple instances in different thread
-            }
-        });
-        var page = await browser.NewPageAsync();
-        await page.GoToAsync(BaseUrl);
+                }
+            });
+            var page = await browser.NewPageAsync();
+            await page.GoToAsync(BaseUrl);
 
-        var form = await page.XPathAsync("//form[textarea[@id='id_waybills']]");
-        var inputArea = await page.QuerySelectorAsync("#id_waybills");
-        await inputArea.EvaluateFunctionAsync($"el => el.value = '{string.Join(",", referenceNumbers)}'");
-        await form.First().EvaluateFunctionAsync("e => e.submit()");
+            var form = await page.XPathAsync("//form[textarea[@id='id_waybills']]");
+            var inputArea = await page.QuerySelectorAsync("#id_waybills");
+            await inputArea.EvaluateFunctionAsync($"el => el.value = '{string.Join(",", referenceNumbers)}'");
+            await form.First().EvaluateFunctionAsync("e => e.submit()");
 
-        await page.WaitForNavigationAsync();
+            await page.WaitForNavigationAsync();
 
-        return await page.GetContentAsync();
+            return await page.GetContentAsync();
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting page content");
+            throw;
+        }
     }
 }

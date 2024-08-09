@@ -1,10 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NaqelExpressCrawl", "NaqelExpressCrawl\NaqelExpressCrawl.csproj", "{CE30B906-E4A3-4E89-8A3B-D5A7215637EB}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NaqelExpressCrawl", "NaqelExpressCrawl\NaqelExpressCrawl.csproj", "{CE30B906-E4A3-4E89-8A3B-D5A7215637EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlingService", "CrawlingService\CrawlingService.csproj", "{9B007D87-A255-4131-82FC-22E429984ECA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrawlingService", "CrawlingService\CrawlingService.csproj", "{9B007D87-A255-4131-82FC-22E429984ECA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRunner", "TestRunner\TestRunner.csproj", "{4FC0637E-67A5-474A-B455-738AD21FDEBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestRunner", "TestRunner\TestRunner.csproj", "{4FC0637E-67A5-474A-B455-738AD21FDEBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingClient", "TestingClient\TestingClient.csproj", "{8926DF81-9F40-4CE6-A311-C816C9AE0C31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +29,12 @@ Global
 		{4FC0637E-67A5-474A-B455-738AD21FDEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FC0637E-67A5-474A-B455-738AD21FDEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FC0637E-67A5-474A-B455-738AD21FDEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8926DF81-9F40-4CE6-A311-C816C9AE0C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8926DF81-9F40-4CE6-A311-C816C9AE0C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8926DF81-9F40-4CE6-A311-C816C9AE0C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8926DF81-9F40-4CE6-A311-C816C9AE0C31}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
