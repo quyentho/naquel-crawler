@@ -50,7 +50,7 @@ internal class Program
         string content1 = JsonSerializer.Serialize(referenceNumbers);
         var content = new StringContent(content1, new MediaTypeHeaderValue("application/json"));
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7065/NaqelCrawling")
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7065/NaqelCrawling/ReadFromApiAsync")
         {
             Content = content
         };

@@ -7,14 +7,15 @@ builder.Logging.AddConsole(options =>
     options.UseUtcTimestamp = true; // Set the timezone to GMT+7
 });
 
+builder.Services.AddHttpClient();
 // Add services to the container.
-builder.Services.AddSingleton(provider => new CrawlingService.CrawlingService(provider.GetRequiredService<ILogger<CrawlingService.CrawlingService>>())
+builder.Services.AddSingleton(provider =>
+    new CrawlingService.CrawlingService(
+        provider.GetRequiredService<ILogger<CrawlingService.CrawlingService>>(),
+        provider.GetRequiredService<IHttpClientFactory>())
 );
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
@@ -31,13 +32,6 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
